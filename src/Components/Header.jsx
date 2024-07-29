@@ -1,15 +1,22 @@
-import React, { useContext } from "react";
-import { AuthContext } from "./AuthContext"; // Import the AuthContext
+import React, { useContext, useEffect } from "react";
 import logocorss from "../assets/logocross.svg";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { FaUserCircle } from "react-icons/fa";
+import { AuthContext } from "./Context/AuthContext/AuthContext";
+import { ToastContainer, toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 
 const Header = () => {
-  const { isLoggedIn, logout } = useContext(AuthContext);
-
+  const { token, logoutUserAction } = useContext(AuthContext);
+  const navigate = useNavigate();
+  const handleLogout = () => {
+    logoutUserAction();
+    navigate("/");
+  };
   return (
     <>
       <div className="flex gap-3 justify-between items-center  max-h-24 max-w-[1340px] mx-16 my-8 ">
+        <ToastContainer />
         <Link to={"/"}>
           <div className="flex">
             <img src={logocorss} alt="logo" />
@@ -37,13 +44,13 @@ const Header = () => {
             </li>
           </ul>
         </div>
-        {isLoggedIn ? (
+        {token ? (
           <>
             <div className="flex gap-5 shrink min-h-9 ">
               <FaUserCircle className="w-8 h-8" />
               <button
                 className="bg-[#E7EDE7]  min-w-32 rounded-lg hover:scale-110"
-                onClick={logout}
+                onClick={handleLogout}
               >
                 Logout
               </button>

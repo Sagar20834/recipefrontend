@@ -12,9 +12,8 @@ import BlogCard from "./Components/BlogCard.jsx";
 import PopularCategories from "./Components/PopularCategories.jsx";
 import SIgnUpContainer from "./Components/SIgnUpContainer.jsx";
 import Login from "./Components/Login.jsx";
-import { AuthProvider } from "./Components/AuthContext.jsx";
-import RecipeDetail from "./Components/RecipeDetail.jsx";
 
+import RecipeDetail from "./Components/RecipeDetail.jsx";
 const router = createBrowserRouter([
   {
     path: "/",
@@ -62,7 +61,7 @@ const router = createBrowserRouter([
 ]);
 
 ReactDOM.createRoot(document.getElementById("root")).render(
-  <AuthProvider>
+  <>
     <RouterProvider router={router} />
-  </AuthProvider>
+  </>
 );

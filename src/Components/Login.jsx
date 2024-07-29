@@ -1,38 +1,19 @@
 import React, { useState, useContext } from "react";
 import { useForm } from "react-hook-form";
 import { FaEnvelope, FaEye, FaEyeSlash, FaLock } from "react-icons/fa6";
-import { Link, useNavigate } from "react-router-dom";
-import { ToastContainer, toast } from "react-toastify";
-import "react-toastify/dist/ReactToastify.css";
-import { AuthContext } from "./AuthContext"; // Import the AuthContext
-import axios from "axios";
+import { Link } from "react-router-dom";
+import { AuthContext } from "./Context/AuthContext/AuthContext";
 
 const Login = () => {
-  const navigate = useNavigate();
-  const { login } = useContext(AuthContext); // Get the login function from AuthContext
   const [showPassword, setShowPassword] = useState(false);
-  const savedUserData = localStorage.getItem("user");
-  const [user, setUser] = useState(
-    savedUserData ? JSON.parse(savedUserData) : null
-  );
+
+  const { loginUserAction, state } = useContext(AuthContext);
 
   const togglePasswordVisibility = () => {
     setShowPassword(!showPassword);
   };
-
-  // const onSubmit = async (data) => {
-  //   console.log("submit called", data);
-  //     try {
-  //       // Convert data to query parameters
-  //       const response = await axios.get("http://localhost:3000/post", { params: data });
-  //       console.log("response is", response.data);
-  //     } catch (error) {
-  //       console.error("Error during API call", error);
-  //     }
-  // };
-
-  const onSubmit = (data) => {
-    checkUserPresent(data);
+  const onSubmit = async (formData) => {
+    loginUserAction(formData);
   };
 
   const {
@@ -41,30 +22,8 @@ const Login = () => {
     formState: { errors },
   } = useForm();
 
-  const checkUserPresent = (data) => {
-    const { email, password } = data;
-    let userFound = false;
-
-    user.forEach((eachData) => {
-      if (eachData.email === email && eachData.password === password) {
-        userFound = true;
-        login(); // Update the login state
-        toast.success("Login Successful", {
-          onClose: () => navigate("/recipe"),
-          autoClose: 1000,
-        });
-        return;
-      }
-    });
-
-    if (!userFound) {
-      toast.error("Invalid email or password");
-    }
-  };
-
   return (
     <div className="max-w-[420px] min-h-52 shadow-2xl mx-auto">
-      <ToastContainer />
       <form
         onSubmit={handleSubmit(onSubmit)}
         className="flex justify-center items-center flex-col m-8 p-2 gap-2"

@@ -3,18 +3,14 @@ import { useForm, useFieldArray } from "react-hook-form";
 import { FaCamera, FaTrash } from "react-icons/fa6";
 import saveRecipeData from "./RecipeData";
 import { toast, ToastContainer } from "react-toastify";
-import { AuthContext } from "./AuthContext";
-import { Link } from "react-router-dom";
-
+import { AuthContext } from "./Context/AuthContext/AuthContext";
 const AddRecipe = () => {
+  const { token } = useContext(AuthContext);
   const [image, setImage] = useState(null);
   const [coverImage, setCoverImage] = useState(null);
 
-  const { isLoggedIn, login, logout } = useContext(AuthContext);
-  const [loggedIn, setLoggedIn] = useState(isLoggedIn);
-  console.log(loggedIn);
   const checklogin = () => {
-    if (!loggedIn) {
+    if (!token) {
       toast.error("You need to be logged in to add a recipe.");
       setLoggedIn(false);
     } else {
@@ -103,7 +99,7 @@ const AddRecipe = () => {
 
   return (
     <>
-      {isLoggedIn ? (
+      {token ? (
         <>
           <ToastContainer />
           <div className="flex justify-between border-y-[1px] items-center min-h-24">

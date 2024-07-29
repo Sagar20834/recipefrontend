@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useContext, useState } from "react";
 import { useForm } from "react-hook-form";
 import logocorss from "../assets/logocross.svg";
 import {
@@ -10,18 +10,12 @@ import {
   FaEye,
   FaEyeSlash,
 } from "react-icons/fa";
-import { Link, useNavigate } from "react-router-dom";
-import { toast, ToastContainer } from "react-toastify";
-import "react-toastify/dist/ReactToastify.css";
+import { Link } from "react-router-dom";
+import { AuthContext } from "./Context/AuthContext/AuthContext";
 
 const SignUpForm = () => {
-  const navigate = useNavigate();
+  const { userCreateAction } = useContext(AuthContext);
 
-  const [savedData, setSavedData] = useState(() => {
-    return localStorage.getItem("user")
-      ? JSON.parse(localStorage.getItem("user"))
-      : [];
-  });
   const [showPassword, setShowPassword] = useState(false);
   const [showRePassword, setShowRePassword] = useState(false);
 
@@ -33,27 +27,15 @@ const SignUpForm = () => {
     formState: { errors },
   } = useForm();
 
-  const onSubmit = (data) => {
-    // Check if email already exists
-    const emailExists = savedData.some((user) => user.email === data.email);
-
-    if (emailExists) {
-      toast.error("A user with this email already exists");
-    } else {
-      setSavedData([...savedData, data]);
-      localStorage.setItem("user", JSON.stringify([...savedData, data]));
-      toast.success("Sign up successful! Redirecting to login page...");
-      reset({
-        fullname: "",
-        email: "",
-        password: "",
-        repassword: "",
-        checkboxterm: false,
-      });
-      setTimeout(() => {
-        navigate("/login");
-      }, 2000);
-    }
+  const onSubmit = async (formData) => {
+    userCreateAction(formData);
+    reset({
+      fullname: "",
+      email: "",
+      password: "",
+      repassword: "",
+      checkboxterm: false,
+    });
   };
 
   const togglePasswordVisibility = () => {
@@ -66,7 +48,6 @@ const SignUpForm = () => {
 
   return (
     <>
-      <ToastContainer />
       <div className="flex flex-col justify-between md:w-[480px]">
         <form
           className="items-center max-w-full"
